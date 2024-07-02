@@ -2,7 +2,8 @@ using FinnanciaCSharp.Data;
 using FinnanciaCSharp.DTOs.Sheet;
 using FinnanciaCSharp.Mappers;
 using Microsoft.AspNetCore.Mvc;
-using FinnanciaCSharp.Enums;
+using FinnanciaCSharp.Lib;
+using FinnanciaCSharp.Models;
 
 namespace FinnanciaCSharp.Controllers
 {
@@ -42,14 +43,28 @@ namespace FinnanciaCSharp.Controllers
                 return BadRequest("Campo(s) inválido(s)");
             }
 
-            // var existingSheet = _context.Sheets.FirstOrDefault(sheet => sheet.Name.Equals($"{Month[0]}"))
+            var MonthMap = Utils.MonthMap();
 
-            // _context.Sheets.Add(newSheet);
-            // _context.SaveChanges();
+            try
+            {
+                var existingSheet = _context.Sheets.FirstOrDefault(sheet => sheet.Name.Equals($"{MonthMap[month]}/{year}"));
 
-            // return CreatedAtAction(nameof(GetSheet), new { id = newSheet.Id }, newSheet.ToSheetDTOFromSheet());
+                if (existingSheet != null)
+                {
+                    return BadRequest("Planilha já existente");
+                }
 
-            return Ok();
+                var newSheet = createSheetDTO.ToSheetFromCreateSheetDTO();
+
+                _context.Sheets.Add(newSheet);
+                _context.SaveChanges();
+
+                return CreatedAtAction(nameof(GetSheet), new { id = newSheet.Id }, newSheet.ToSheetDTOFromSheet());
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }
