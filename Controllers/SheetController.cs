@@ -1,9 +1,7 @@
-using FinnanciaCSharp.Data;
 using FinnanciaCSharp.DTOs.Sheet;
 using FinnanciaCSharp.Mappers;
 using Microsoft.AspNetCore.Mvc;
-using FinnanciaCSharp.Lib;
-using FinnanciaCSharp.Models;
+using FinnanciaCSharp.Interfaces;
 
 namespace FinnanciaCSharp.Controllers
 {
@@ -11,16 +9,24 @@ namespace FinnanciaCSharp.Controllers
     [Route("api/sheet")]
     public class SheetController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
-        public SheetController(ApplicationDBContext context)
+        private readonly ISheetRepository _sheetRepository;
+        public SheetController(ISheetRepository sheetRepository)
         {
-            _context = context;
+            _sheetRepository = sheetRepository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSheets([FromQuery] Guid userId)
+        {
+            var sheets = await _sheetRepository.GetSheetsByUserIdAsync(userId);
+
+            return Ok(sheets);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetSheet([FromRoute] Guid id)
+        public async Task<IActionResult> GetSheetById([FromRoute] Guid id)
         {
-            var sheet = _context.Sheets.Find(id);
+            var sheet = await _sheetRepository.GetSheetByIdAsync(id);
 
             if (sheet == null)
             {
@@ -31,7 +37,7 @@ namespace FinnanciaCSharp.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateSheet([FromBody] CreateSheetDTO createSheetDTO)
+        public async Task<IActionResult> CreateSheet([FromBody] CreateSheetDTO createSheetDTO)
         {
             var currentDate = DateTime.Now;
 
@@ -43,23 +49,20 @@ namespace FinnanciaCSharp.Controllers
                 return BadRequest("Campo(s) inválido(s)");
             }
 
-            var MonthMap = Utils.MonthMap();
-
             try
             {
-                var existingSheet = _context.Sheets.FirstOrDefault(sheet => sheet.Name.Equals($"{MonthMap[month]}/{year}"));
+                var sheetExists = await _sheetRepository.SheetExistsByMonthAndYear(month, year, createSheetDTO.UserId);
 
-                if (existingSheet != null)
+                if (sheetExists)
                 {
                     return BadRequest("Planilha já existente");
                 }
 
                 var newSheet = createSheetDTO.ToSheetFromCreateSheetDTO();
 
-                _context.Sheets.Add(newSheet);
-                _context.SaveChanges();
+                await _sheetRepository.CreateAsync(newSheet);
 
-                return CreatedAtAction(nameof(GetSheet), new { id = newSheet.Id }, newSheet.ToSheetDTOFromSheet());
+                return CreatedAtAction(nameof(GetSheetById), new { id = newSheet.Id }, newSheet.ToSheetDTOFromSheet());
             }
             catch (Exception e)
             {

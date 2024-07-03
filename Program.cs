@@ -1,5 +1,7 @@
 using DotNetEnv;
 using FinnanciaCSharp.Data;
+using FinnanciaCSharp.Interfaces;
+using FinnanciaCSharp.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     Env.Load();
     options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"));
 });
+
+builder.Services.AddScoped<ISheetRepository, SheetRepository>();
 
 var app = builder.Build();
 
