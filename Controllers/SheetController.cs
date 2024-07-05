@@ -5,6 +5,7 @@ using FinnanciaCSharp.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using FinnanciaCSharp.Models;
+using FinnanciaCSharp.Extensions;
 
 namespace FinnanciaCSharp.Controllers
 {
@@ -24,11 +25,30 @@ namespace FinnanciaCSharp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSheets()
         {
-            // var userId = _userManager.GetUserId();
+            try
+            {
+                var userId = User.GetUserId();
 
-            // var sheets = await _sheetRepository.GetSheetsByUserIdAsync(userId);
+                if (userId == null)
+                {
+                    return Unauthorized("Não autorizado");
+                }
 
-            return Ok("Acabar de implementar");
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    return Unauthorized("Não autorizado");
+                }
+
+                var sheets = await _sheetRepository.GetSheetsByUserIdAsync(userId);
+
+                return Ok(new { sheets = sheets, isInitialAmountSet = user.IsInitialAmountSet });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpGet("{id}")]
@@ -59,14 +79,21 @@ namespace FinnanciaCSharp.Controllers
 
             try
             {
-                var sheetExists = await _sheetRepository.SheetExistsByMonthAndYear(month, year, createSheetDTO.UserId);
+                var userId = User.GetUserId();
+
+                if (userId == null)
+                {
+                    return Unauthorized("Não autorizado");
+                }
+
+                var sheetExists = await _sheetRepository.SheetExistsByMonthAndYear(month, year, userId);
 
                 if (sheetExists)
                 {
                     return BadRequest("Planilha já existente");
                 }
 
-                var newSheet = createSheetDTO.ToSheetFromCreateSheetDTO();
+                var newSheet = createSheetDTO.ToSheetFromCreateSheetDTO(userId);
 
                 await _sheetRepository.CreateAsync(newSheet);
 

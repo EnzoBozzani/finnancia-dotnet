@@ -20,7 +20,7 @@ namespace FinnanciaCSharp.Mappers
             };
         }
 
-        public static Sheet ToSheetFromCreateSheetDTO(this CreateSheetDTO createSheetDTO)
+        public static Sheet ToSheetFromCreateSheetDTO(this CreateSheetDTO createSheetDTO, string userId)
         {
             var monthName = Utils.MonthMap()[createSheetDTO.Month];
             var order = Utils.MonthMap().FirstOrDefault(x => x.Value == monthName).Key;
@@ -28,7 +28,7 @@ namespace FinnanciaCSharp.Mappers
             return new Sheet
             {
                 Name = $"{monthName}/{createSheetDTO.Year}",
-                UserId = createSheetDTO.UserId,
+                UserId = userId,
                 TotalAmount = 0,
                 Order = order,
                 FinancesCount = 0
