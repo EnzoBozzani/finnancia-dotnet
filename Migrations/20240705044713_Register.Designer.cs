@@ -3,6 +3,7 @@ using System;
 using FinnanciaCSharp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinnanciaCSharp.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240705044713_Register")]
+    partial class Register
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,8 +142,14 @@ namespace FinnanciaCSharp.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("EmailVerified")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<bool>("HasUsedFreeReport")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsInitialAmountSet")
                         .HasColumnType("boolean");
@@ -221,13 +230,13 @@ namespace FinnanciaCSharp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d290cdd9-8f27-42a3-bd95-316a36349c7f",
+                            Id = "17bc7694-1c52-4dd2-a7ad-e742c7f6f46c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "7c3c6bf5-3b51-4447-ba9a-6334c2cdaa7f",
+                            Id = "8baa89b3-3a94-4d63-80f3-b914f27012d3",
                             Name = "User",
                             NormalizedName = "USER"
                         });
