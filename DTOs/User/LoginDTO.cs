@@ -2,10 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FinnanciaCSharp.DTOs.User
 {
-    public class RegisterDTO
+    public class LoginDTO
     {
-        [Required]
-        public string? Name { get; set; }
         [Required]
         [EmailAddress]
         public string? Email { get; set; }

@@ -5,6 +5,7 @@ namespace FinnanciaCSharp.Models
 {
     public class User : IdentityUser
     {
+        public string Name { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; } = 0;
         public bool IsInitialAmountSet { get; set; } = false;
         public bool HasUsedFreeReport { get; set; } = false;
