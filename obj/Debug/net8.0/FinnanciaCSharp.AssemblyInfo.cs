@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FinnanciaCSharp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a0d2e2ba54fb13ee48f69110345ef13d6c3e356")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("FinnanciaCSharp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FinnanciaCSharp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
