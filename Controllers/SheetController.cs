@@ -2,28 +2,33 @@ using FinnanciaCSharp.DTOs.Sheet;
 using FinnanciaCSharp.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using FinnanciaCSharp.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using FinnanciaCSharp.Models;
 
 namespace FinnanciaCSharp.Controllers
 {
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/sheet")]
     public class SheetController : ControllerBase
     {
+        private readonly UserManager<User> _userManager;
         private readonly ISheetRepository _sheetRepository;
-        public SheetController(ISheetRepository sheetRepository)
+        public SheetController(ISheetRepository sheetRepository, UserManager<User> userManager)
         {
             _sheetRepository = sheetRepository;
+            _userManager = userManager;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSheets([FromQuery] string userId)
+        public async Task<IActionResult> GetSheets()
         {
-            var sheets = await _sheetRepository.GetSheetsByUserIdAsync(userId);
+            // var userId = _userManager.GetUserId();
 
-            Console.WriteLine("oi");
+            // var sheets = await _sheetRepository.GetSheetsByUserIdAsync(userId);
 
-            return Ok(sheets);
+            return Ok("Acabar de implementar");
         }
 
         [HttpGet("{id}")]

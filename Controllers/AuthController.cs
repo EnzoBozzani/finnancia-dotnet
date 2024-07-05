@@ -1,4 +1,5 @@
 using FinnanciaCSharp.DTOs.User;
+using FinnanciaCSharp.Interfaces;
 using FinnanciaCSharp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,11 @@ namespace FinnanciaCSharp.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        public AuthController(UserManager<User> userManager)
+        private readonly ITokenService _tokenService;
+        public AuthController(UserManager<User> userManager, ITokenService tokenService)
         {
             _userManager = userManager;
+            _tokenService = tokenService;
         }
 
         [HttpPost("register")]
@@ -39,7 +42,12 @@ namespace FinnanciaCSharp.Controllers
 
                     if (roleResult.Succeeded)
                     {
-                        return Ok("Usuário criado com sucesso!");
+                        return Ok(new NewUserDTO
+                        {
+                            UserName = appUser.UserName,
+                            Email = appUser.Email,
+                            Token = _tokenService.CreateToken(appUser)
+                        });
                     }
 
                     return StatusCode(500, roleResult.Errors);
