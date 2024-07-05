@@ -2,7 +2,6 @@ using FinnanciaCSharp.DTOs.Sheet;
 using FinnanciaCSharp.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using FinnanciaCSharp.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 
 namespace FinnanciaCSharp.Controllers
 {
@@ -18,7 +17,7 @@ namespace FinnanciaCSharp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSheets([FromQuery] Guid userId)
+        public async Task<IActionResult> GetSheets([FromQuery] string userId)
         {
             var sheets = await _sheetRepository.GetSheetsByUserIdAsync(userId);
 

@@ -7,7 +7,7 @@ namespace FinnanciaCSharp.Interfaces
     {
         Task<Sheet?> GetSheetByIdAsync(Guid id);
         Task<Sheet> CreateAsync(Sheet sheet);
-        Task<bool> SheetExistsByMonthAndYear(int month, int year, Guid userId);
-        Task<List<SheetDTO>> GetSheetsByUserIdAsync(Guid userId);
+        Task<bool> SheetExistsByMonthAndYear(int month, int year, string userId);
+        Task<List<SheetDTO>> GetSheetsByUserIdAsync(string userId);
     }
 }

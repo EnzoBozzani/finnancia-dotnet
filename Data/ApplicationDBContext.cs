@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using FinnanciaCSharp.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace FinnanciaCSharp.Data
 {
-    public class ApplicationDBContext : DbContext
+    public class ApplicationDBContext : IdentityDbContext<User>
     {
         public ApplicationDBContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {
@@ -12,6 +13,5 @@ namespace FinnanciaCSharp.Data
         public DbSet<Finance> Finances { get; set; }
         public DbSet<Sheet> Sheets { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<User> Users { get; set; }
     }
 }

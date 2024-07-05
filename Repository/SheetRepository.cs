@@ -29,14 +29,14 @@ namespace FinnanciaCSharp.Repository
             return await _context.Sheets.FirstOrDefaultAsync(sheet => sheet.Id == id);
         }
 
-        public async Task<bool> SheetExistsByMonthAndYear(int month, int year, Guid userId)
+        public async Task<bool> SheetExistsByMonthAndYear(int month, int year, string userId)
         {
             var MonthMap = Utils.MonthMap();
             return await _context.Sheets
                 .AnyAsync(sheet => sheet.Name.Equals($"{MonthMap[month]}/{year}") && sheet.UserId == userId);
         }
 
-        public async Task<List<SheetDTO>> GetSheetsByUserIdAsync(Guid userId)
+        public async Task<List<SheetDTO>> GetSheetsByUserIdAsync(string userId)
         {
             return await _context.Sheets
                 .Where(sheet => sheet.UserId == userId)
