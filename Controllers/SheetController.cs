@@ -22,6 +22,41 @@ namespace FinnanciaCSharp.Controllers
             _userManager = userManager;
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSheet([FromRoute] Guid id)
+        {
+            try
+            {
+                var userId = User.GetUserId();
+
+                if (userId == null)
+                {
+                    return Unauthorized("Não autorizado");
+                }
+
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    return Unauthorized("Não autorizado");
+                }
+
+                var sheet = await _sheetRepository.DeleteSheet(id);
+
+                if (sheet == null)
+                {
+                    return NotFound("Planilha não encontrada");
+                }
+
+                return Ok($"Planilha {sheet.Name} deletada com sucesso!");
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetSheets()
         {

@@ -40,8 +40,24 @@ namespace FinnanciaCSharp.Repository
         {
             return await _context.Sheets
                 .Where(sheet => sheet.UserId == userId)
+                .OrderBy(sheet => sheet.Order)
                 .Select(sheet => sheet.ToSheetDTOFromSheet())
                 .ToListAsync();
+        }
+
+        public async Task<Sheet?> DeleteSheet(Guid id)
+        {
+            var sheet = await _context.Sheets.FindAsync(id);
+
+            if (sheet == null)
+            {
+                return null;
+            }
+
+            _context.Sheets.Remove(sheet);
+            await _context.SaveChangesAsync();
+
+            return sheet;
         }
     }
 }
