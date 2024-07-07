@@ -54,14 +54,35 @@ namespace FinnanciaCSharp.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSheetById([FromRoute] Guid id)
         {
-            var sheet = await _sheetRepository.GetSheetByIdAsync(id);
-
-            if (sheet == null)
+            try
             {
-                return NotFound();
-            }
+                var userId = User.GetUserId();
 
-            return Ok(sheet.ToSheetDTOFromSheet());
+                if (userId == null)
+                {
+                    return Unauthorized("Não autorizado!");
+                }
+
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    return Unauthorized("Não autorizado!");
+                }
+
+                var sheet = await _sheetRepository.GetSheetByIdAsync(id);
+
+                if (sheet == null)
+                {
+                    return NotFound("Planilha não encontrada!");
+                }
+
+                return Ok(sheet.ToSheetDTOFromSheet());
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpPost]
