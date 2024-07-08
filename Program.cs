@@ -97,6 +97,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 builder.Services.AddScoped<ISheetRepository, SheetRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IFinanceRepository, FinanceRepository>();
 
 var app = builder.Build();
 

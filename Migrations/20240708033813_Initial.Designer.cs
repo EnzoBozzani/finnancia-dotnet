@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinnanciaCSharp.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240708010137_Initial")]
+    [Migration("20240708033813_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -230,13 +230,13 @@ namespace FinnanciaCSharp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8be77963-de84-446d-a722-9c9ec24fb8d2",
+                            Id = "f6cea7b9-5a77-49f6-a8e5-b0ebf7740d2b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "87645522-5cc5-425e-968a-dd90f288eb8d",
+                            Id = "1b85e51c-03ef-45eb-82dc-047003fd040e",
                             Name = "User",
                             NormalizedName = "USER"
                         });

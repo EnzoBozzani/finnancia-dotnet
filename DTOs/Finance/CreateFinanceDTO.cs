@@ -17,9 +17,6 @@ namespace FinnanciaCSharp.DTOs.Finance
         [Required]
         [Length(6, 7, ErrorMessage = "O tipo da finança deve ter entre 6 e 7 caracteres")]
         public string FinanceType { get; set; } = string.Empty;
-        [Required]
-        public Guid CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
     }
 }
-
-// EXPENSE

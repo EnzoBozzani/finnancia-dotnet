@@ -4,6 +4,6 @@ namespace FinnanciaCSharp.Interfaces
 {
     public interface IFinanceRepository
     {
-        Task<Finance> CreateAsync();
+        Task<Finance> CreateAsync(Finance finance);
     }
 }

@@ -240,8 +240,8 @@ namespace FinnanciaCSharp.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "87645522-5cc5-425e-968a-dd90f288eb8d", null, "User", "USER" },
-                    { "8be77963-de84-446d-a722-9c9ec24fb8d2", null, "Admin", "ADMIN" }
+                    { "1b85e51c-03ef-45eb-82dc-047003fd040e", null, "User", "USER" },
+                    { "f6cea7b9-5a77-49f6-a8e5-b0ebf7740d2b", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
