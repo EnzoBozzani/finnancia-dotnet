@@ -1,4 +1,5 @@
 using FinnanciaCSharp.DTOs.Sheet;
+using FinnanciaCSharp.DTOs.Finance;
 using FinnanciaCSharp.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using FinnanciaCSharp.Interfaces;
@@ -22,6 +23,34 @@ namespace FinnanciaCSharp.Controllers
             _userManager = userManager;
         }
 
+        [HttpPost("{id}/finance")]
+        public async Task<IActionResult> CreateFinance([FromRoute] Guid id, [FromBody] CreateFinanceDTO createFinanceDTO)
+        {
+            try
+            {
+                var userId = User.GetUserId();
+
+                if (userId == null)
+                {
+                    return Unauthorized("Não autorizado");
+                }
+
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                {
+                    return Unauthorized("Não autorizado");
+                }
+
+                return Ok("implementar");
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSheet([FromRoute] Guid id)
         {
@@ -41,7 +70,7 @@ namespace FinnanciaCSharp.Controllers
                     return Unauthorized("Não autorizado");
                 }
 
-                var sheet = await _sheetRepository.DeleteSheet(id);
+                var sheet = await _sheetRepository.DeleteSheetAsync(id);
 
                 if (sheet == null)
                 {
@@ -128,9 +157,9 @@ namespace FinnanciaCSharp.Controllers
             var year = createSheetDTO.Year;
             var month = createSheetDTO.Month;
 
-            if (year < currentDate.Year || year > currentDate.Year + 1 || month < 1 || month > 12)
+            if (year < currentDate.Year || year > currentDate.Year + 1)
             {
-                return BadRequest("Campo(s) inválido(s)");
+                return BadRequest("O ano deve ser entre o ano atual ou o próximo");
             }
 
             try
@@ -142,7 +171,7 @@ namespace FinnanciaCSharp.Controllers
                     return Unauthorized("Não autorizado");
                 }
 
-                var sheetExists = await _sheetRepository.SheetExistsByMonthAndYear(month, year, userId);
+                var sheetExists = await _sheetRepository.SheetExistsByMonthAndYearAsync(month, year, userId);
 
                 if (sheetExists)
                 {

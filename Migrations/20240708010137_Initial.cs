@@ -4,10 +4,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace FinnanciaCSharp.Migrations
 {
     /// <inheritdoc />
-    public partial class Identity : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,8 +33,7 @@ namespace FinnanciaCSharp.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    EmailVerified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Image = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     TotalAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     IsInitialAmountSet = table.Column<bool>(type: "boolean", nullable: false),
                     HasUsedFreeReport = table.Column<bool>(type: "boolean", nullable: false),
@@ -168,7 +169,7 @@ namespace FinnanciaCSharp.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Color = table.Column<int>(type: "integer", nullable: false),
+                    Color = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -214,7 +215,7 @@ namespace FinnanciaCSharp.Migrations
                     Date = table.Column<string>(type: "text", nullable: false),
                     SheetId = table.Column<Guid>(type: "uuid", nullable: true),
                     Order = table.Column<int>(type: "integer", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
                     CategoryId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
@@ -232,6 +233,15 @@ namespace FinnanciaCSharp.Migrations
                         column: x => x.SheetId,
                         principalTable: "Sheets",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "87645522-5cc5-425e-968a-dd90f288eb8d", null, "User", "USER" },
+                    { "8be77963-de84-446d-a722-9c9ec24fb8d2", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

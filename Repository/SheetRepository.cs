@@ -29,7 +29,7 @@ namespace FinnanciaCSharp.Repository
             return await _context.Sheets.FirstOrDefaultAsync(sheet => sheet.Id == id);
         }
 
-        public async Task<bool> SheetExistsByMonthAndYear(int month, int year, string userId)
+        public async Task<bool> SheetExistsByMonthAndYearAsync(int month, int year, string userId)
         {
             var MonthMap = Utils.MonthMap();
             return await _context.Sheets
@@ -45,7 +45,7 @@ namespace FinnanciaCSharp.Repository
                 .ToListAsync();
         }
 
-        public async Task<Sheet?> DeleteSheet(Guid id)
+        public async Task<Sheet?> DeleteSheetAsync(Guid id)
         {
             var sheet = await _context.Sheets.FindAsync(id);
 

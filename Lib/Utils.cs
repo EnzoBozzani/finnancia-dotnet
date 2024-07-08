@@ -7,6 +7,7 @@ namespace FinnanciaCSharp.Lib
 {
     public static class Utils
     {
+        private static readonly List<string> FinanceType = new List<string> { "EXPENSE", "PROFIT" };
         public static Dictionary<int, string> MonthMap()
         {
             return new Dictionary<int, string>(){
@@ -23,6 +24,11 @@ namespace FinnanciaCSharp.Lib
                 { 11, "Novembro"},
                 { 12, "Dezembro"}
             };
+        }
+
+        public static bool IsValidFinanceType(string value)
+        {
+            return FinanceType.Contains(value);
         }
     }
 }

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using FinnanciaCSharp.Enums;
 
 namespace FinnanciaCSharp.Models
 {
@@ -13,12 +12,11 @@ namespace FinnanciaCSharp.Models
         public Guid? SheetId { get; set; }
         public Sheet? Sheet { get; set; }
         public int Order { get; set; }
-        public FinanceType Type { get; set; }
+        public string Type { get; set; } = string.Empty;
         [ForeignKey("Category")]
         public Guid? CategoryId { get; set; }
         public Category? Category { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
-
     }
 }

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinnanciaCSharp.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240705160248_AddNameToUser")]
-    partial class AddNameToUser
+    [Migration("20240708010137_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,8 +31,9 @@ namespace FinnanciaCSharp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Color")
-                        .HasColumnType("integer");
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -78,8 +79,9 @@ namespace FinnanciaCSharp.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -228,13 +230,13 @@ namespace FinnanciaCSharp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1ab26645-2cbc-47d9-95b2-bfc4b24cdbf5",
+                            Id = "8be77963-de84-446d-a722-9c9ec24fb8d2",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "50bb3cdb-70d1-443e-9d8f-be46dcfb5ed8",
+                            Id = "87645522-5cc5-425e-968a-dd90f288eb8d",
                             Name = "User",
                             NormalizedName = "USER"
                         });
