@@ -59,5 +59,20 @@ namespace FinnanciaCSharp.Repository
 
             return sheet;
         }
+
+        public async Task<bool> UpdateTotalAmount(Guid sheetId, Finance finance)
+        {
+            var sheet = await _context.Sheets.FindAsync(sheetId);
+
+            if (sheet == null)
+            {
+                return false;
+            }
+
+            sheet.TotalAmount = finance.Type == "PROFIT" ? sheet.TotalAmount + finance.Amount : sheet.TotalAmount - finance.Amount;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

@@ -171,10 +171,10 @@ namespace FinnanciaCSharp.Controllers
                 var userTotalAmount = user.TotalAmount;
                 var isInitialAmountSet = user.IsInitialAmountSet;
 
-                if (!isInitialAmountSet)
-                {
-                    return BadRequest("Saldo inicial ainda não foi definido");
-                }
+                // if (!isInitialAmountSet)
+                // {
+                //     return BadRequest("Saldo inicial ainda não foi definido");
+                // }
 
                 var sheet = await _sheetRepository.GetSheetByIdAsync(id);
 
@@ -201,7 +201,14 @@ namespace FinnanciaCSharp.Controllers
 
                 await _financeRepository.CreateAsync(finance);
 
-                //TODO: totalAmounts: criar novo metodo no sheetRepository e criar um userRepository
+                var updatedSucceeded = await _sheetRepository.UpdateTotalAmount(id, finance);
+
+                if (!updatedSucceeded)
+                {
+                    return NotFound("Planilha não encontrada");
+                }
+
+                //TODO: totalAmount: criar um userRepository
 
                 return Ok(finance.ToFinanceDTO());
             }
