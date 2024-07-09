@@ -168,14 +168,16 @@ namespace FinnanciaCSharp.Controllers
                     return NotFound("Planilha não encontrada");
                 }
 
-                //TODO: calcular o amount das finances
-
                 var paginatedFinances = await _financeRepository.GetPaginatedFinances(id, queryDTO);
 
                 var finances = paginatedFinances.Select(finance => finance.ToFinanceWithCategoryDTO());
 
+                var financesAmount = await _financeRepository.GetFinancesAmount(id, queryDTO.Title);
+
+                var financesCount = await _financeRepository.GetFinancesCount(id, queryDTO.Title);
+
                 return Ok(
-                    new { finances, financesCount = sheet.FinancesCount, sheetId = sheet.Id, financesAmount = 0 }
+                    new { finances, financesCount, sheetId = sheet.Id, financesAmount }
                 );
             }
             catch (Exception e)

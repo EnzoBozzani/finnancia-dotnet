@@ -41,5 +41,52 @@ namespace FinnanciaCSharp.Repository
 
             return await finances.Skip(skip).Take(8).ToListAsync();
         }
+
+        public async Task<decimal> GetFinancesAmount(Guid sheetId, string? title)
+        {
+            var formattedTitle = title ?? "";
+
+            var profitAmount = await _context.Finances
+                .Where(finance => finance.SheetId == sheetId && finance.Type == "PROFIT"
+                    &&
+                    (
+                        finance.Title.ToLower().Contains(formattedTitle.ToLower())
+                        ||
+                        finance.Category != null && finance.Category.Name.ToLower().Contains(formattedTitle.ToLower())
+                    )
+                )
+                .SumAsync(finance => finance.Amount);
+
+            var expenseAmount = await _context.Finances
+                .Where(finance => finance.SheetId == sheetId && finance.Type == "EXPENSE"
+                    &&
+                    (
+                        finance.Title.ToLower().Contains(formattedTitle.ToLower())
+                        ||
+                        finance.Category != null && finance.Category.Name.ToLower().Contains(formattedTitle.ToLower())
+                    )
+                )
+                .SumAsync(finance => finance.Amount);
+
+            return profitAmount - expenseAmount;
+        }
+
+        public async Task<int> GetFinancesCount(Guid sheetId, string? title)
+        {
+            var formattedTitle = title ?? "";
+
+            var financesCount = await _context.Finances
+                .Where(finance => finance.SheetId == sheetId
+                    &&
+                    (
+                        finance.Title.ToLower().Contains(formattedTitle.ToLower())
+                        ||
+                        finance.Category != null && finance.Category.Name.ToLower().Contains(formattedTitle.ToLower())
+                    )
+                )
+                .CountAsync();
+
+            return financesCount;
+        }
     }
 }
