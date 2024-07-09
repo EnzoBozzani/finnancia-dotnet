@@ -208,7 +208,9 @@ namespace FinnanciaCSharp.Controllers
                     return NotFound("Planilha não encontrada");
                 }
 
-                //TODO: totalAmount: criar um userRepository
+                user.TotalAmount = user.TotalAmount = finance.Type == "PROFIT" ? user.TotalAmount + finance.Amount : user.TotalAmount - finance.Amount;
+
+                await _userManager.UpdateAsync(user);
 
                 return Ok(finance.ToFinanceDTO());
             }
