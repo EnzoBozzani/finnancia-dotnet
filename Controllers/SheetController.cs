@@ -172,7 +172,7 @@ namespace FinnanciaCSharp.Controllers
 
                 var paginatedFinances = await _financeRepository.GetPaginatedFinances(id, queryDTO);
 
-                var finances = paginatedFinances.Select(finance => finance.ToFinanceDTO());
+                var finances = paginatedFinances.Select(finance => finance.ToFinanceWithCategoryDTO());
 
                 return Ok(
                     new { finances, financesCount = sheet.FinancesCount, sheetId = sheet.Id, financesAmount = 0 }

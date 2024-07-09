@@ -48,5 +48,25 @@ namespace FinnanciaCSharp.Mappers
                 UpdatedAt = finance.UpdatedAt
             };
         }
+
+        public static FinanceWithCategoryDTO ToFinanceWithCategoryDTO(this Finance finance)
+        {
+            var categoryDto = finance.Category != null ? finance.Category.ToCategoryDTO() : null;
+
+            return new FinanceWithCategoryDTO
+            {
+                Id = finance.Id,
+                Title = finance.Title,
+                Amount = finance.Amount,
+                Date = finance.Date,
+                Order = finance.Order,
+                Type = finance.Type,
+                CategoryId = finance.CategoryId,
+                SheetId = finance.SheetId,
+                Category = categoryDto,
+                CreatedAt = finance.CreatedAt,
+                UpdatedAt = finance.UpdatedAt
+            };
+        }
     }
 }
