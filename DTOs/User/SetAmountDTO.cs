@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FinnanciaCSharp.DTOs.User
 {
-    public class ChangeAmountDTO
+    public class SetAmountDTO
     {
         [Required]
         [Range(-1E12, 1E12)]

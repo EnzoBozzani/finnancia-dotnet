@@ -1,7 +1,6 @@
 using FinnanciaCSharp.Data;
 using FinnanciaCSharp.DTOs.Finance;
 using FinnanciaCSharp.Interfaces;
-using FinnanciaCSharp.Mappers;
 using FinnanciaCSharp.Models;
 using Microsoft.EntityFrameworkCore;
 
