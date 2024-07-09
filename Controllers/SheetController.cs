@@ -104,7 +104,7 @@ namespace FinnanciaCSharp.Controllers
                     return Unauthorized("Não autorizado");
                 }
 
-                var sheet = await _sheetRepository.GetSheetByIdAsync(id);
+                var sheet = await _sheetRepository.GetSheetByIdAsync(id, userId);
 
                 if (sheet == null)
                 {
@@ -148,6 +148,42 @@ namespace FinnanciaCSharp.Controllers
             }
         }
 
+        [HttpGet("{id}/finance")]
+        public async Task<IActionResult> GetPaginatedFinances([FromRoute] Guid id, [FromQuery] GetPaginatedFinancesQueryDTO queryDTO)
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var user = await _userManager.FindByIdAsync(userId == null ? "" : userId);
+
+                if (user == null || userId == null)
+                {
+                    return Unauthorized("Não autorizado");
+                }
+
+                var sheet = await _sheetRepository.GetSheetByIdAsync(id, userId);
+
+                if (sheet == null)
+                {
+                    return NotFound("Planilha não encontrada");
+                }
+
+                //TODO: calcular o amount das finances
+
+                var paginatedFinances = await _financeRepository.GetPaginatedFinances(id, queryDTO);
+
+                var finances = paginatedFinances.Select(finance => finance.ToFinanceDTO());
+
+                return Ok(
+                    new { finances, financesCount = sheet.FinancesCount, sheetId = sheet.Id, financesAmount = 0 }
+                );
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpPost("{id}/finance")]
         public async Task<IActionResult> CreateFinance([FromRoute] Guid id, [FromBody] CreateFinanceDTO createFinanceDTO)
         {
@@ -168,15 +204,14 @@ namespace FinnanciaCSharp.Controllers
                     return BadRequest("Campo(s) inválido(s)");
                 }
 
-                var userTotalAmount = user.TotalAmount;
                 var isInitialAmountSet = user.IsInitialAmountSet;
 
-                // if (!isInitialAmountSet)
-                // {
-                //     return BadRequest("Saldo inicial ainda não foi definido");
-                // }
+                if (!isInitialAmountSet)
+                {
+                    return BadRequest("Saldo inicial ainda não foi definido");
+                }
 
-                var sheet = await _sheetRepository.GetSheetByIdAsync(id);
+                var sheet = await _sheetRepository.GetSheetByIdAsync(id, userId);
 
                 if (sheet == null)
                 {
@@ -201,14 +236,14 @@ namespace FinnanciaCSharp.Controllers
 
                 await _financeRepository.CreateAsync(finance);
 
-                var updatedSucceeded = await _sheetRepository.UpdateTotalAmount(id, finance);
+                var updatedSucceeded = await _sheetRepository.UpdateTotalAmountAndFinancesCount(id, finance);
 
                 if (!updatedSucceeded)
                 {
                     return NotFound("Planilha não encontrada");
                 }
 
-                user.TotalAmount = user.TotalAmount = finance.Type == "PROFIT" ? user.TotalAmount + finance.Amount : user.TotalAmount - finance.Amount;
+                user.TotalAmount = finance.Type == "PROFIT" ? user.TotalAmount + finance.Amount : user.TotalAmount - finance.Amount;
 
                 await _userManager.UpdateAsync(user);
 

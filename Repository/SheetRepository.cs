@@ -24,9 +24,9 @@ namespace FinnanciaCSharp.Repository
             return sheet;
         }
 
-        public async Task<Sheet?> GetSheetByIdAsync(Guid id)
+        public async Task<Sheet?> GetSheetByIdAsync(Guid id, string userId)
         {
-            return await _context.Sheets.FirstOrDefaultAsync(sheet => sheet.Id == id);
+            return await _context.Sheets.FirstOrDefaultAsync(sheet => sheet.Id == id && sheet.UserId == userId);
         }
 
         public async Task<bool> SheetExistsByMonthAndYearAsync(int month, int year, string userId)
@@ -60,7 +60,7 @@ namespace FinnanciaCSharp.Repository
             return sheet;
         }
 
-        public async Task<bool> UpdateTotalAmount(Guid sheetId, Finance finance)
+        public async Task<bool> UpdateTotalAmountAndFinancesCount(Guid sheetId, Finance finance)
         {
             var sheet = await _context.Sheets.FindAsync(sheetId);
 
@@ -70,6 +70,7 @@ namespace FinnanciaCSharp.Repository
             }
 
             sheet.TotalAmount = finance.Type == "PROFIT" ? sheet.TotalAmount + finance.Amount : sheet.TotalAmount - finance.Amount;
+            sheet.FinancesCount += 1;
             await _context.SaveChangesAsync();
 
             return true;
