@@ -60,7 +60,7 @@ namespace FinnanciaCSharp.Repository
             return sheet;
         }
 
-        public async Task<bool> UpdateTotalAmountAndFinancesCount(Guid sheetId, Finance finance)
+        public async Task<bool> UpdateTotalAmountAndFinancesCountAsync(Guid sheetId, Finance finance)
         {
             var sheet = await _context.Sheets.FindAsync(sheetId);
 

@@ -11,9 +11,8 @@ namespace FinnanciaCSharp.Models
         public bool HasUsedFreeReport { get; set; } = false;
         public List<Sheet> Sheets { get; set; } = new List<Sheet>();
         public List<Category> Categories { get; set; } = new List<Category>();
+        public List<HelpMessage> HelpMessages { get; set; } = new List<HelpMessage>();
     }
 }
 
 //   messages Message[]
-//   categories Category[]
-//   helpMessages HelpMessage[]

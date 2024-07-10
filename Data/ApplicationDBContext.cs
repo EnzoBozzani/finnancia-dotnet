@@ -14,6 +14,7 @@ namespace FinnanciaCSharp.Data
         public DbSet<Finance> Finances { get; set; }
         public DbSet<Sheet> Sheets { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<HelpMessage> HelpMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

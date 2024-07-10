@@ -21,7 +21,7 @@ namespace FinnanciaCSharp.Repository
             return finance;
         }
 
-        public async Task<List<Finance>> GetPaginatedFinances(Guid sheetId, GetPaginatedFinancesQueryDTO queryDTO)
+        public async Task<List<Finance>> GetPaginatedFinancesAsync(Guid sheetId, GetPaginatedFinancesQueryDTO queryDTO)
         {
             var title = queryDTO.Title ?? "";
             var skip = (queryDTO.Page - 1) * 8;
@@ -41,7 +41,7 @@ namespace FinnanciaCSharp.Repository
             return await finances.Skip(skip).Take(8).ToListAsync();
         }
 
-        public async Task<decimal> GetFinancesAmount(Guid sheetId, string? title)
+        public async Task<decimal> GetFinancesAmountAsync(Guid sheetId, string? title)
         {
             var formattedTitle = title ?? "";
 
@@ -70,7 +70,7 @@ namespace FinnanciaCSharp.Repository
             return profitAmount - expenseAmount;
         }
 
-        public async Task<int> GetFinancesCount(Guid sheetId, string? title)
+        public async Task<int> GetFinancesCountAsync(Guid sheetId, string? title)
         {
             var formattedTitle = title ?? "";
 

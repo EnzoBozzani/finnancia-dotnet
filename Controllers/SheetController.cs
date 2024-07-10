@@ -168,13 +168,13 @@ namespace FinnanciaCSharp.Controllers
                     return NotFound("Planilha não encontrada");
                 }
 
-                var paginatedFinances = await _financeRepository.GetPaginatedFinances(id, queryDTO);
+                var paginatedFinances = await _financeRepository.GetPaginatedFinancesAsync(id, queryDTO);
 
                 var finances = paginatedFinances.Select(finance => finance.ToFinanceWithCategoryDTO());
 
-                var financesAmount = await _financeRepository.GetFinancesAmount(id, queryDTO.Title);
+                var financesAmount = await _financeRepository.GetFinancesAmountAsync(id, queryDTO.Title);
 
-                var financesCount = await _financeRepository.GetFinancesCount(id, queryDTO.Title);
+                var financesCount = await _financeRepository.GetFinancesCountAsync(id, queryDTO.Title);
 
                 return Ok(
                     new { finances, financesCount, sheetId = sheet.Id, financesAmount }
@@ -238,7 +238,7 @@ namespace FinnanciaCSharp.Controllers
 
                 await _financeRepository.CreateAsync(finance);
 
-                var updatedSucceeded = await _sheetRepository.UpdateTotalAmountAndFinancesCount(id, finance);
+                var updatedSucceeded = await _sheetRepository.UpdateTotalAmountAndFinancesCountAsync(id, finance);
 
                 if (!updatedSucceeded)
                 {

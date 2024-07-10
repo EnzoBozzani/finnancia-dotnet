@@ -10,6 +10,6 @@ namespace FinnanciaCSharp.Interfaces
         Task<bool> SheetExistsByMonthAndYearAsync(int month, int year, string userId);
         Task<List<SheetDTO>> GetSheetsByUserIdAsync(string userId);
         Task<Sheet?> DeleteSheetAsync(Guid id);
-        Task<bool> UpdateTotalAmountAndFinancesCount(Guid sheetId, Finance finance);
+        Task<bool> UpdateTotalAmountAndFinancesCountAsync(Guid sheetId, Finance finance);
     }
 }
