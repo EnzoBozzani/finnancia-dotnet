@@ -35,14 +35,14 @@ namespace FinnanciaCSharp.Controllers
 
                 if (user == null)
                 {
-                    return Unauthorized("Não autorizado");
+                    return Unauthorized(new { error = "Não autorizado" });
                 }
 
                 var result = await _signinManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
 
                 if (!result.Succeeded)
                 {
-                    return Unauthorized("Credenciais inválidas");
+                    return Unauthorized(new { error = "Credenciais inválidas" });
                 }
 
                 return Ok(
@@ -55,7 +55,7 @@ namespace FinnanciaCSharp.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e);
+                return StatusCode(500, new { error = e.Message });
             }
         }
 
@@ -92,14 +92,14 @@ namespace FinnanciaCSharp.Controllers
                         });
                     }
 
-                    return StatusCode(500, roleResult.Errors);
+                    return StatusCode(500, new { error = roleResult.Errors });
                 }
 
-                return StatusCode(500, createdUser.Errors);
+                return StatusCode(500, new { error = createdUser.Errors });
             }
             catch (Exception e)
             {
-                return StatusCode(500, e);
+                return StatusCode(500, new { error = e.Message });
             }
         }
     }

@@ -117,7 +117,7 @@ namespace FinnanciaCSharp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("HelpMessage");
+                    b.ToTable("HelpMessages");
                 });
 
             modelBuilder.Entity("FinnanciaCSharp.Models.Sheet", b =>
@@ -255,13 +255,13 @@ namespace FinnanciaCSharp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3e02ad2a-cc4b-40fa-b90a-a5d8abcf3bd0",
+                            Id = "6d25f18b-b508-49b9-8fbc-0a83e071a207",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "bbf0beec-53c3-4853-b5e6-37fb6c42a12d",
+                            Id = "d602d75e-474c-4662-8d3b-1dca2ec8831e",
                             Name = "User",
                             NormalizedName = "USER"
                         });

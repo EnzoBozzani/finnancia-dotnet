@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinnanciaCSharp.Models
 {
+    [Table("HelpMessages")]
     public class HelpMessage
     {
         [Key]

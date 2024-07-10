@@ -184,6 +184,27 @@ namespace FinnanciaCSharp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "HelpMessages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Body = table.Column<string>(type: "text", nullable: false),
+                    UserEmail = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HelpMessages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HelpMessages_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Sheets",
                 columns: table => new
                 {
@@ -240,8 +261,8 @@ namespace FinnanciaCSharp.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1b85e51c-03ef-45eb-82dc-047003fd040e", null, "User", "USER" },
-                    { "f6cea7b9-5a77-49f6-a8e5-b0ebf7740d2b", null, "Admin", "ADMIN" }
+                    { "6d25f18b-b508-49b9-8fbc-0a83e071a207", null, "Admin", "ADMIN" },
+                    { "d602d75e-474c-4662-8d3b-1dca2ec8831e", null, "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -297,6 +318,11 @@ namespace FinnanciaCSharp.Migrations
                 column: "SheetId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_HelpMessages_UserId",
+                table: "HelpMessages",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sheets_UserId",
                 table: "Sheets",
                 column: "UserId");
@@ -322,6 +348,9 @@ namespace FinnanciaCSharp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Finances");
+
+            migrationBuilder.DropTable(
+                name: "HelpMessages");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -36,16 +36,16 @@ namespace FinnanciaCSharp.Controllers
 
                 if (user == null || userId == null)
                 {
-                    return Unauthorized("Não autorizado");
+                    return Unauthorized(new { error = "Não autorizado" });
                 }
 
                 var sheets = await _sheetRepository.GetSheetsByUserIdAsync(userId);
 
-                return Ok(new { sheets = sheets, isInitialAmountSet = user.IsInitialAmountSet });
+                return Ok(new { sheets, isInitialAmountSet = user.IsInitialAmountSet });
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new { error = e.Message });
             }
         }
 
@@ -59,7 +59,7 @@ namespace FinnanciaCSharp.Controllers
 
             if (year < currentDate.Year || year > currentDate.Year + 1)
             {
-                return BadRequest("O ano deve ser entre o ano atual ou o próximo");
+                return BadRequest(new { error = "O ano deve ser entre o ano atual ou o próximo" });
             }
 
             try
@@ -69,14 +69,19 @@ namespace FinnanciaCSharp.Controllers
 
                 if (user == null || userId == null)
                 {
-                    return Unauthorized("Não autorizado");
+                    return Unauthorized(new { error = "Não autorizado" });
+                }
+
+                if (!user.IsInitialAmountSet)
+                {
+                    return BadRequest(new { error = "Saldo inicial ainda não foi definido" });
                 }
 
                 var sheetExists = await _sheetRepository.SheetExistsByMonthAndYearAsync(month, year, userId);
 
                 if (sheetExists)
                 {
-                    return BadRequest("Planilha já existente");
+                    return BadRequest(new { error = "Planilha já existente" });
                 }
 
                 var newSheet = createSheetDTO.ToSheetFromCreateSheetDTO(userId);
@@ -87,7 +92,7 @@ namespace FinnanciaCSharp.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new { error = e.Message });
             }
         }
 
@@ -101,21 +106,21 @@ namespace FinnanciaCSharp.Controllers
 
                 if (user == null || userId == null)
                 {
-                    return Unauthorized("Não autorizado");
+                    return Unauthorized(new { error = "Não autorizado" });
                 }
 
                 var sheet = await _sheetRepository.GetSheetByIdAsync(id, userId);
 
                 if (sheet == null)
                 {
-                    return NotFound("Planilha não encontrada!");
+                    return NotFound(new { error = "Planilha não encontrada!" });
                 }
 
                 return Ok(sheet.ToSheetDTOFromSheet());
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new { error = e.Message });
             }
         }
 
@@ -129,22 +134,22 @@ namespace FinnanciaCSharp.Controllers
 
                 if (user == null || userId == null)
                 {
-                    return Unauthorized("Não autorizado");
+                    return Unauthorized(new { error = "Não autorizado" });
                 }
 
                 var sheet = await _sheetRepository.DeleteSheetAsync(id);
 
                 if (sheet == null)
                 {
-                    return NotFound("Planilha não encontrada");
+                    return NotFound(new { error = "Planilha não encontrada" });
                 }
 
-                return Ok($"Planilha {sheet.Name} deletada com sucesso!");
+                return Ok(new { success = $"Planilha {sheet.Name} deletada com sucesso!" });
             }
             catch (Exception e)
             {
 
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new { error = e.Message });
             }
         }
 
@@ -158,14 +163,14 @@ namespace FinnanciaCSharp.Controllers
 
                 if (user == null || userId == null)
                 {
-                    return Unauthorized("Não autorizado");
+                    return Unauthorized(new { error = "Não autorizado" });
                 }
 
                 var sheet = await _sheetRepository.GetSheetByIdAsync(id, userId);
 
                 if (sheet == null)
                 {
-                    return NotFound("Planilha não encontrada");
+                    return NotFound(new { error = "Planilha não encontrada" });
                 }
 
                 var paginatedFinances = await _financeRepository.GetPaginatedFinancesAsync(id, queryDTO);
@@ -182,7 +187,7 @@ namespace FinnanciaCSharp.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new { error = e.Message });
             }
         }
 
@@ -196,28 +201,28 @@ namespace FinnanciaCSharp.Controllers
 
                 if (user == null || userId == null)
                 {
-                    return Unauthorized("Não autorizado");
+                    return Unauthorized(new { error = "Não autorizado" });
                 }
 
                 var finance = createFinanceDTO.ToFinanceFromCreateFinanceDTO(id);
 
                 if (finance == null)
                 {
-                    return BadRequest("Campo(s) inválido(s)");
+                    return BadRequest(new { error = "Campo(s) inválido(s)" });
                 }
 
                 var isInitialAmountSet = user.IsInitialAmountSet;
 
                 if (!isInitialAmountSet)
                 {
-                    return BadRequest("Saldo inicial ainda não foi definido");
+                    return BadRequest(new { error = "Saldo inicial ainda não foi definido" });
                 }
 
                 var sheet = await _sheetRepository.GetSheetByIdAsync(id, userId);
 
                 if (sheet == null)
                 {
-                    return NotFound("Planilha não encontrada");
+                    return NotFound(new { error = "Planilha não encontrada" });
                 }
 
                 var financeMonth = int.Parse(createFinanceDTO.Date.Substring(3, 2));
@@ -231,7 +236,7 @@ namespace FinnanciaCSharp.Controllers
 
                 if (!monthMap[financeMonth].Equals(sheetMonth) || !financeYear.Equals(sheetYear))
                 {
-                    return BadRequest("O mês e ano da finança devem corresponder ao da planilha");
+                    return BadRequest(new { error = "O mês e ano da finança devem corresponder ao da planilha" });
                 }
 
                 //TODO: USER SUBSCRIPTION
@@ -242,7 +247,7 @@ namespace FinnanciaCSharp.Controllers
 
                 if (!updatedSucceeded)
                 {
-                    return NotFound("Planilha não encontrada");
+                    return NotFound(new { error = "Planilha não encontrada" });
                 }
 
                 user.TotalAmount = finance.Type == "PROFIT" ? user.TotalAmount + finance.Amount : user.TotalAmount - finance.Amount;
@@ -254,7 +259,7 @@ namespace FinnanciaCSharp.Controllers
             catch (Exception e)
             {
 
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new { error = e.Message });
             }
         }
     }
