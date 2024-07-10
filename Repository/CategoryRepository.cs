@@ -1,6 +1,7 @@
 using FinnanciaCSharp.Data;
 using FinnanciaCSharp.DTOs.Category;
 using FinnanciaCSharp.Interfaces;
+using FinnanciaCSharp.Mappers;
 using FinnanciaCSharp.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +28,15 @@ namespace FinnanciaCSharp.Repository
             await _context.SaveChangesAsync();
 
             return category;
+        }
+
+        public async Task<List<CategoryDTO>> GetCategories(string userId)
+        {
+            return await _context.Categories
+                .Where(category => category.UserId == userId)
+                .OrderBy(category => category.Name)
+                .Select(category => category.ToCategoryDTO())
+                .ToListAsync();
         }
 
         public async Task<Category?> GetCategory(NewCategoryDTO bodyDTO, string userId)

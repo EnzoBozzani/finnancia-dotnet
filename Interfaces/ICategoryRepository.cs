@@ -7,5 +7,6 @@ namespace FinnanciaCSharp.Interfaces
     {
         Task<Category?> GetCategory(NewCategoryDTO bodyDTO, string userId);
         Task<Category> CreateAsync(NewCategoryDTO bodyDTO, string userId);
+        Task<List<CategoryDTO>> GetCategories(string userId);
     }
 }
