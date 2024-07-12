@@ -30,7 +30,7 @@ namespace FinnanciaCSharp.Repository
             return category;
         }
 
-        public async Task<List<CategoryDTO>> GetCategories(string userId)
+        public async Task<List<CategoryDTO>> GetCategoriesAsync(string userId)
         {
             return await _context.Categories
                 .Where(category => category.UserId == userId)
@@ -39,11 +39,29 @@ namespace FinnanciaCSharp.Repository
                 .ToListAsync();
         }
 
-        public async Task<Category?> GetCategory(NewCategoryDTO bodyDTO, string userId)
+        public async Task<Category?> GetCategoryAsync(NewCategoryDTO bodyDTO, string userId)
         {
             return await _context.Categories
                 .FirstOrDefaultAsync(category => category.UserId == userId
                 && (category.Color == bodyDTO.Color || category.Name == bodyDTO.Name));
+        }
+
+        public async Task<Category?> UpdateAsync(UpdateCategoryDTO bodyDTO, Guid id)
+        {
+            var category = await _context.Categories.FindAsync(id);
+
+            if (category == null)
+            {
+                return null;
+            }
+
+            category.Color = bodyDTO.Color == null || bodyDTO.Color.Equals(string.Empty) ? category.Color : bodyDTO.Color;
+            category.Name = bodyDTO.Name == null || bodyDTO.Name.Equals(string.Empty) ? category.Name : bodyDTO.Name;
+
+            _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
+
+            return category;
         }
     }
 }

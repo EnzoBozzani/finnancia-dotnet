@@ -5,8 +5,9 @@ namespace FinnanciaCSharp.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<Category?> GetCategory(NewCategoryDTO bodyDTO, string userId);
+        Task<Category?> GetCategoryAsync(NewCategoryDTO bodyDTO, string userId);
         Task<Category> CreateAsync(NewCategoryDTO bodyDTO, string userId);
-        Task<List<CategoryDTO>> GetCategories(string userId);
+        Task<List<CategoryDTO>> GetCategoriesAsync(string userId);
+        Task<Category?> UpdateAsync(UpdateCategoryDTO bodyDTO, Guid id);
     }
 }
