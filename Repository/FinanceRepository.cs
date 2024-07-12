@@ -1,6 +1,7 @@
 using FinnanciaCSharp.Data;
 using FinnanciaCSharp.DTOs.Finance;
 using FinnanciaCSharp.Interfaces;
+using FinnanciaCSharp.Mappers;
 using FinnanciaCSharp.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,8 +36,8 @@ namespace FinnanciaCSharp.Repository
                         (finance.Category != null && finance.Category.Name.ToLower().Contains(title.ToLower()))
                     )
                 )
-                .OrderByDescending(finance => finance.Order)
-                .OrderByDescending(finance => finance.CreatedAt);
+                .OrderByDescending(finance => finance.CreatedAt)
+                .OrderByDescending(finance => finance.Order);
 
             return await finances.Skip(skip).Take(8).ToListAsync();
         }
@@ -86,6 +87,16 @@ namespace FinnanciaCSharp.Repository
                 .CountAsync();
 
             return financesCount;
+        }
+
+        public async Task<List<FinanceWithCategoryDTO>> GetFinancesWithCategories(Guid sheetId, string userId)
+        {
+            var finances = _context.Finances.AsQueryable()
+                .Where(finance => finance.SheetId == sheetId && finance.Sheet!.UserId == userId)
+                .Include(finance => finance.Category)
+                .Select(finance => finance.ToFinanceWithCategoryDTO());
+
+            return await finances.ToListAsync();
         }
     }
 }

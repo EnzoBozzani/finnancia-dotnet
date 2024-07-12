@@ -15,7 +15,7 @@ namespace FinnanciaCSharp.DTOs.Finance
         [Length(2, 50, ErrorMessage = "O título deve ter entre 2 e 50 caracteres")]
         public string Title { get; set; } = string.Empty;
         [Required]
-        [Length(6, 7, ErrorMessage = "O tipo da finança deve ter entre 6 e 7 caracteres")]
+        [RegularExpression(@"^(PROFIT|EXPENSE)$", ErrorMessage = "Tipo inválido")]
         public string FinanceType { get; set; } = string.Empty;
         public Guid? CategoryId { get; set; }
     }
