@@ -30,6 +30,21 @@ namespace FinnanciaCSharp.Repository
             return category;
         }
 
+        public async Task<Category?> DeleteAsync(Guid id)
+        {
+            var category = await _context.Categories.FindAsync(id);
+
+            if (category == null)
+            {
+                return null;
+            }
+
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+
+            return category;
+        }
+
         public async Task<List<CategoryDTO>> GetCategoriesAsync(string userId)
         {
             return await _context.Categories

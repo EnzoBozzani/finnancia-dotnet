@@ -113,5 +113,33 @@ namespace FinnanciaCSharp.Controllers
                 return StatusCode(500, new { error = e.Message });
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var user = await _userManager.FindByIdAsync(userId == null ? "" : userId);
+
+                if (user == null || userId == null)
+                {
+                    return Unauthorized(new { error = "Não autorizado" });
+                }
+
+                var category = await _categoryRepository.DeleteAsync(id);
+
+                if (category == null)
+                {
+                    return NotFound(new { error = "Categoria não encontrada" });
+                }
+
+                return Ok(new { success = "Categoria deletada com sucesso!" });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { error = e.Message });
+            }
+        }
     }
 }
