@@ -52,6 +52,34 @@ namespace FinnanciaCSharp.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFinance([FromRoute] Guid id)
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var user = await _userManager.FindByIdAsync(userId == null ? "" : userId);
+
+                if (user == null || userId == null)
+                {
+                    return Unauthorized(new { error = "Não autorizado" });
+                }
+
+                var finance = await _financeRepository.DeleteAsync(user, id);
+
+                if (finance == null)
+                {
+                    return NotFound(new { error = "Finança ou planilha não encontrada(s)" });
+                }
+
+                return Ok(new { success = "Deletado com sucesso!" });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { error = e.Message });
+            }
+        }
+
         [HttpGet("categories/{sheetId}")]
         public async Task<IActionResult> GetFinancesWithCategories([FromRoute] Guid sheetId)
         {

@@ -11,5 +11,6 @@ namespace FinnanciaCSharp.Interfaces
         Task<int> GetFinancesCountAsync(Guid sheetId, string? title);
         Task<List<FinanceWithCategoryDTO>> GetFinancesWithCategoriesAsync(Guid sheetId, string userId);
         Task<Finance?> UpdateAsync(User user, Guid id, EditFinanceDTO bodyDTO);
+        Task<Finance?> DeleteAsync(User user, Guid id);
     }
 }

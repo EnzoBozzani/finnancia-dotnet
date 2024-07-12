@@ -196,5 +196,44 @@ namespace FinnanciaCSharp.Repository
 
             return financeToBeEdited;
         }
+
+        public async Task<Finance?> DeleteAsync(User user, Guid id)
+        {
+            var financeToBeDeleted = await _context.Finances
+                .FirstOrDefaultAsync(finance => finance.Id == id && finance.Sheet!.UserId == user.Id);
+
+            if (financeToBeDeleted == null)
+            {
+                return null;
+            }
+
+            var sheet = await _context.Sheets
+                .FirstOrDefaultAsync(sheet => sheet.Id == financeToBeDeleted.SheetId && sheet.UserId == user.Id);
+
+            if (sheet == null)
+            {
+                return null;
+            }
+
+            sheet.TotalAmount = financeToBeDeleted.Type == "PROFIT" ?
+                sheet.TotalAmount - financeToBeDeleted.Amount
+                :
+                sheet.TotalAmount + financeToBeDeleted.Amount;
+
+            sheet.FinancesCount -= 1;
+
+            user.TotalAmount = financeToBeDeleted.Type == "PROFIT" ?
+                user.TotalAmount - financeToBeDeleted.Amount
+                :
+                user.TotalAmount + financeToBeDeleted.Amount;
+
+            _context.Finances.Remove(financeToBeDeleted);
+            _context.Sheets.Update(sheet);
+            await _context.SaveChangesAsync();
+
+            await _userManager.UpdateAsync(user);
+
+            return financeToBeDeleted;
+        }
     }
 }
