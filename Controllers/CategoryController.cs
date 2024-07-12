@@ -81,6 +81,31 @@ namespace FinnanciaCSharp.Controllers
             }
         }
 
+        [HttpGet("colors")]
+        public async Task<IActionResult> GetColors()
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var user = await _userManager.FindByIdAsync(userId == null ? "" : userId);
+
+                if (user == null || userId == null)
+                {
+                    return Unauthorized(new { error = "Não autorizado" });
+                }
+
+                var categories = await _categoryRepository.GetCategoriesAsync(userId);
+
+                var colors = categories.Select(category => category.Color);
+
+                return Ok(colors);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { error = e.Message });
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] UpdateCategoryDTO bodyDTO)
         {
