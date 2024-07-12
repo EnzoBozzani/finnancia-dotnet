@@ -233,7 +233,6 @@ namespace FinnanciaCSharp.Controllers
 
                 var monthMap = Utils.MonthMap();
 
-
                 if (!monthMap[financeMonth].Equals(sheetMonth) || !financeYear.Equals(sheetYear))
                 {
                     return BadRequest(new { error = "O mês e ano da finança devem corresponder ao da planilha" });
