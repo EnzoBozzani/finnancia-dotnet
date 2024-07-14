@@ -15,6 +15,7 @@ namespace FinnanciaCSharp.Data
         public DbSet<Sheet> Sheets { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<HelpMessage> HelpMessages { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

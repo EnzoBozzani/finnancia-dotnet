@@ -11,7 +11,6 @@ namespace FinnanciaCSharp.Models
         public List<Sheet> Sheets { get; set; } = new List<Sheet>();
         public List<Category> Categories { get; set; } = new List<Category>();
         public List<HelpMessage> HelpMessages { get; set; } = new List<HelpMessage>();
+        public List<Message> Messages { get; set; } = new List<Message>();
     }
 }
-
-//   messages Message[]
