@@ -120,9 +120,9 @@ namespace FinnanciaCSharp.Controllers
         {
             try
             {
-                var obj = await _aiService.ChatWithAIAsync();
+                var text = await _aiService.ChatWithAIAsync();
 
-                return Ok(obj);
+                return Ok(text);
             }
             catch (Exception e)
             {

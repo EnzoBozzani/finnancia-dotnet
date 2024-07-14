@@ -2,6 +2,7 @@ using System.Text;
 using Newtonsoft.Json;
 using DotNetEnv;
 using FinnanciaCSharp.Interfaces;
+using FinnanciaCSharp.DTOs.GenAI;
 
 namespace FinnanciaCSharp.Services
 {
@@ -16,7 +17,7 @@ namespace FinnanciaCSharp.Services
             _httpClient = new HttpClient();
         }
 
-        public async Task<object?> ChatWithAIAsync()
+        public async Task<string?> ChatWithAIAsync()
         {
             var model = "gemini-1.5-flash";
 
@@ -46,9 +47,14 @@ namespace FinnanciaCSharp.Services
             res.EnsureSuccessStatusCode();
 
             var responseContent = await res.Content.ReadAsStringAsync();
-            var chatResponse = JsonConvert.DeserializeObject(responseContent);
+            var chatResponse = JsonConvert.DeserializeObject<ApiResponse>(responseContent);
 
-            return chatResponse;
+            if (chatResponse == null)
+            {
+                return null;
+            }
+
+            return chatResponse.candidates[0].content.parts[0].text;
         }
     }
 }
