@@ -15,10 +15,12 @@ namespace FinnanciaCSharp.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IHelpMessageRepository _helpMessageRepository;
-        public UserController(UserManager<User> userManager, IHelpMessageRepository helpMessageRepository)
+        private readonly IGenAIService _aiService;
+        public UserController(UserManager<User> userManager, IHelpMessageRepository helpMessageRepository, IGenAIService aIService)
         {
             _userManager = userManager;
             _helpMessageRepository = helpMessageRepository;
+            _aiService = aIService;
         }
 
         [HttpPut("amount")]
@@ -106,6 +108,21 @@ namespace FinnanciaCSharp.Controllers
 
                 return Ok(new { success = "Mensagem enviada com sucesso!" });
 
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { error = e.Message });
+            }
+        }
+
+        [HttpPost("ai")]
+        public async Task<IActionResult> AI()
+        {
+            try
+            {
+                var obj = await _aiService.ChatWithAIAsync();
+
+                return Ok(obj);
             }
             catch (Exception e)
             {
