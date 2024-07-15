@@ -1,4 +1,5 @@
 using FinnanciaCSharp.DTOs;
+using FinnanciaCSharp.DTOs.Sheet;
 using FinnanciaCSharp.Models;
 
 namespace FinnanciaCSharp.Interfaces
@@ -11,5 +12,6 @@ namespace FinnanciaCSharp.Interfaces
         Task<List<SheetDTO>> GetSheetsByUserIdAsync(string userId);
         Task<Sheet?> DeleteSheetAsync(Guid id);
         Task<bool> UpdateTotalAmountAndFinancesCountAsync(Guid sheetId, Finance finance);
+        Task<List<SheetWithFinanceDTO>> GetSheetWithFinances(string userId);
     }
 }

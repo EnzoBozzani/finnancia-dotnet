@@ -21,6 +21,28 @@ namespace FinnanciaCSharp.Controllers
             _genAiService = genAIService;
             _messageRepository = messageRepository;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetMessages()
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var user = await _userManager.FindByIdAsync(userId == null ? "" : userId);
+
+                if (user == null || userId == null)
+                {
+                    return Unauthorized(new { error = "Não autorizado" });
+                }
+
+                var messages = (await _messageRepository.GetMessagesAsync(userId)).Select(message => message.ToMessageDTO());
+
+                return Ok(messages);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { error = e.Message });
+            }
+        }
 
         [HttpPost]
         public async Task<IActionResult> GenerateAIResponse([FromBody] AiPromptDTO bodyDTO)

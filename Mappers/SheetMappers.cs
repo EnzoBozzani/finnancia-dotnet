@@ -2,6 +2,7 @@ using FinnanciaCSharp.Lib;
 using FinnanciaCSharp.DTOs;
 using FinnanciaCSharp.DTOs.Sheet;
 using FinnanciaCSharp.Models;
+using FinnanciaCSharp.DTOs.Finance;
 
 namespace FinnanciaCSharp.Mappers
 {
@@ -32,6 +33,22 @@ namespace FinnanciaCSharp.Mappers
                 TotalAmount = 0,
                 Order = order,
                 FinancesCount = 0
+            };
+        }
+
+        public static SheetWithFinanceDTO ToSheetWithFinanceDTO(this Sheet sheet)
+        {
+            var finances = sheet.Finances.Select(finance => finance.ToFinanceDTO());
+
+            return new SheetWithFinanceDTO
+            {
+                Id = sheet.Id,
+                Name = sheet.Name,
+                Order = sheet.Order,
+                TotalAmount = sheet.TotalAmount,
+                FinancesCount = sheet.FinancesCount,
+                UserId = sheet.UserId,
+                Finances = finances
             };
         }
     }

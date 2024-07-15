@@ -31,6 +31,7 @@ namespace FinnanciaCSharp.Repository
         {
             return await _context.Messages
                 .Where(message => message.UserId == userId)
+                .OrderBy(message => message.CreatedAt)
                 .ToListAsync();
         }
     }

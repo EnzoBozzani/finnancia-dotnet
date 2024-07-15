@@ -1,5 +1,6 @@
 using FinnanciaCSharp.Data;
 using FinnanciaCSharp.DTOs;
+using FinnanciaCSharp.DTOs.Sheet;
 using FinnanciaCSharp.Interfaces;
 using FinnanciaCSharp.Lib;
 using FinnanciaCSharp.Mappers;
@@ -74,6 +75,14 @@ namespace FinnanciaCSharp.Repository
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<List<SheetWithFinanceDTO>> GetSheetWithFinances(string userId)
+        {
+            return await _context.Sheets
+                .Where(sheet => sheet.UserId == userId)
+                .Select(sheet => sheet.ToSheetWithFinanceDTO())
+                .ToListAsync();
         }
     }
 }
