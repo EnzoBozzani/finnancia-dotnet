@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using FinnanciaCSharp.Extensions;
 using FinnanciaCSharp.DTOs.GenAI;
+using FinnanciaCSharp.Mappers;
 
 namespace FinnanciaCSharp.Controllers
 {
@@ -42,15 +43,15 @@ namespace FinnanciaCSharp.Controllers
 
                 //verify user subs
 
-                var aiResponse = await _genAiService.ChatWithAIAsync();
+                var aiResponse = await _genAiService.ChatWithAIAsync(bodyDTO.Message, oldMessages, user.Name);
 
                 if (aiResponse == null)
                 {
                     return StatusCode(500, new { error = "Algo deu errado ao gerar o conteúdo" });
                 }
 
-                var userMessage = await _messageRepository.CreateAsync(bodyDTO.Message, userId, "USER");
-                var modelMessage = await _messageRepository.CreateAsync(aiResponse, userId, "MODEL");
+                var userMessage = (await _messageRepository.CreateAsync(bodyDTO.Message, userId, "USER")).ToMessageDTO();
+                var modelMessage = (await _messageRepository.CreateAsync(aiResponse, userId, "MODEL")).ToMessageDTO();
 
                 return Ok(new { userMessage, modelMessage });
             }
