@@ -95,7 +95,7 @@ namespace FinnanciaCSharp.Controllers
                     return Unauthorized(new { error = "Não autorizado" });
                 }
 
-                var lastMessage = await _helpMessageRepository.GetLastMessage(userId);
+                var lastMessage = await _helpMessageRepository.GetLastMessageAsync(userId);
 
                 if (lastMessage != null && lastMessage.CreatedAt.AddDays(1) > DateTime.Now)
                 {

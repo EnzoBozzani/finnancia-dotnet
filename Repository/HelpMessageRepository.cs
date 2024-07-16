@@ -28,7 +28,7 @@ namespace FinnanciaCSharp.Repository
             return helpMessage;
         }
 
-        public async Task<HelpMessage?> GetLastMessage(string userId)
+        public async Task<HelpMessage?> GetLastMessageAsync(string userId)
         {
             var lastMessage = await _context.HelpMessages
                 .Where(message => message.UserId == userId)

@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using FinnanciaCSharp.Extensions;
 using FinnanciaCSharp.DTOs.GenAI;
 using FinnanciaCSharp.Mappers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FinnanciaCSharp.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/ai")]
     public class AIController : ControllerBase

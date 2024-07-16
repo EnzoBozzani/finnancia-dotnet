@@ -275,7 +275,7 @@ namespace FinnanciaCSharp.Controllers
                     return Unauthorized(new { error = "Não autorizado" });
                 }
 
-                var sheetsWithFinances = await _sheetRepository.GetSheetWithFinances(userId);
+                var sheetsWithFinances = await _sheetRepository.GetSheetWithFinancesAsync(userId);
 
                 return Ok(new { sheets = sheetsWithFinances, isInitialAmountSet = user.IsInitialAmountSet, totalAmount = user.TotalAmount });
             }
@@ -298,7 +298,7 @@ namespace FinnanciaCSharp.Controllers
                     return Unauthorized(new { error = "Não autorizado" });
                 }
 
-                var sheetData = await _sheetRepository.GetSheetWith8FirstFinances(userId, id);
+                var sheetData = await _sheetRepository.GetSheetWith8FirstFinancesAsync(userId, id);
 
                 return Ok(sheetData);
             }

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using FinnanciaCSharp.Models;
 
 namespace FinnanciaCSharp.Extensions
 {

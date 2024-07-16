@@ -77,7 +77,7 @@ namespace FinnanciaCSharp.Repository
             return true;
         }
 
-        public async Task<List<SheetWithFinanceDTO>> GetSheetWithFinances(string userId)
+        public async Task<List<SheetWithFinanceDTO>> GetSheetWithFinancesAsync(string userId)
         {
             return await _context.Sheets
                 .Where(sheet => sheet.UserId == userId)
@@ -85,7 +85,7 @@ namespace FinnanciaCSharp.Repository
                 .ToListAsync();
         }
 
-        public async Task<SheetWithFinanceDTO?> GetSheetWith8FirstFinances(string userId, Guid sheetId)
+        public async Task<SheetWithFinanceDTO?> GetSheetWith8FirstFinancesAsync(string userId, Guid sheetId)
         {
             var sheet = await _context.Sheets
                 .Where(sheet => sheet.Id == sheetId && sheet.UserId == userId)
@@ -98,6 +98,22 @@ namespace FinnanciaCSharp.Repository
             }
 
             return sheet.ToSheetWithFinanceDTO();
+        }
+
+        public async Task<SheetWithFinanceWithCategoryDTO?> GetSheetWithFinanceWithCategoryAsync(string userId, Guid id)
+        {
+            var sheet = await _context.Sheets
+                .Where(sheet => sheet.UserId == userId && sheet.Id == id)
+                .Include(sheet => sheet.Finances.OrderBy(finance => finance.Order))
+                .ThenInclude(finance => finance.Category)
+                .FirstOrDefaultAsync();
+
+            if (sheet == null)
+            {
+                return null;
+            }
+
+            return sheet.ToSheetWithFinanceWithCategoryDTO();
         }
     }
 }

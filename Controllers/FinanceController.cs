@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using FinnanciaCSharp.Extensions;
 using FinnanciaCSharp.DTOs.Finance;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FinnanciaCSharp.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/finances")]
     public class FinanceController : ControllerBase

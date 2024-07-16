@@ -5,6 +5,6 @@ namespace FinnanciaCSharp.Interfaces
     public interface IHelpMessageRepository
     {
         Task<HelpMessage> CreateAsync(string body, User user);
-        Task<HelpMessage?> GetLastMessage(string userId);
+        Task<HelpMessage?> GetLastMessageAsync(string userId);
     }
 }

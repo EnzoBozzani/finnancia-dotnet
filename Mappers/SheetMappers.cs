@@ -51,5 +51,21 @@ namespace FinnanciaCSharp.Mappers
                 Finances = finances
             };
         }
+
+        public static SheetWithFinanceWithCategoryDTO ToSheetWithFinanceWithCategoryDTO(this Sheet sheet)
+        {
+            var finances = sheet.Finances.Select(finance => finance.ToFinanceWithCategoryDTO());
+
+            return new SheetWithFinanceWithCategoryDTO
+            {
+                Id = sheet.Id,
+                Name = sheet.Name,
+                Order = sheet.Order,
+                TotalAmount = sheet.TotalAmount,
+                FinancesCount = sheet.FinancesCount,
+                UserId = sheet.UserId,
+                Finances = finances
+            };
+        }
     }
 }
