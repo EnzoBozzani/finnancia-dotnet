@@ -284,5 +284,28 @@ namespace FinnanciaCSharp.Controllers
                 return StatusCode(500, new { error = e.Message });
             }
         }
+
+        [HttpGet("dashboard/sheet-page/{id}")]
+        public async Task<IActionResult> GetSheetDataWithFinances([FromRoute] Guid id)
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var user = await _userManager.FindByIdAsync(userId == null ? "" : userId);
+
+                if (user == null || userId == null)
+                {
+                    return Unauthorized(new { error = "Não autorizado" });
+                }
+
+                var sheetData = await _sheetRepository.GetSheetWith8FirstFinances(userId, id);
+
+                return Ok(sheetData);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { error = e.Message });
+            }
+        }
     }
 }

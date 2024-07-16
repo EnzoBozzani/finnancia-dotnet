@@ -84,5 +84,20 @@ namespace FinnanciaCSharp.Repository
                 .Select(sheet => sheet.ToSheetWithFinanceDTO())
                 .ToListAsync();
         }
+
+        public async Task<SheetWithFinanceDTO?> GetSheetWith8FirstFinances(string userId, Guid sheetId)
+        {
+            var sheet = await _context.Sheets
+                .Where(sheet => sheet.Id == sheetId && sheet.UserId == userId)
+                .Include(sheet => sheet.Finances.OrderBy(finance => finance.Order).Take(8))
+                .FirstOrDefaultAsync();
+
+            if (sheet == null)
+            {
+                return null;
+            }
+
+            return sheet.ToSheetWithFinanceDTO();
+        }
     }
 }
