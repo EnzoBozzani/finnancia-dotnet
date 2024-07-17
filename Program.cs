@@ -102,6 +102,7 @@ builder.Services.AddScoped<IHelpMessageRepository, HelpMessageRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IGenAIService, GenAIService>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IUserSubscriptionRepository, UserSubscriptionRepository>();
 
 var app = builder.Build();
 

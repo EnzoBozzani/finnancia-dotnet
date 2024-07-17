@@ -26,8 +26,30 @@ namespace FinnanciaCSharp.Controllers
             _apiKey = Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY")!;
             _returnUrl = $"{Environment.GetEnvironmentVariable("CLIENT_URL")!}/plans";
         }
-
         [HttpGet]
+        public async Task<IActionResult> GetUserSubscription()
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var user = await _userManager.FindByIdAsync(userId == null ? "" : userId);
+
+                if (user == null || userId == null)
+                {
+                    return Unauthorized(new { error = "Não autorizado" });
+                }
+
+                var userSubscription = await _userSubRepository.GetUserSubscriptionAsync(userId);
+
+                return Ok(new { userSubscription });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { error = e.Message });
+            }
+        }
+
+        [HttpGet("url")]
         public async Task<IActionResult> GetSubscriptionUrl()
         {
             try

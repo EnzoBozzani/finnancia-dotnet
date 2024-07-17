@@ -6,6 +6,7 @@ using FinnanciaCSharp.Extensions;
 using FinnanciaCSharp.DTOs.GenAI;
 using FinnanciaCSharp.Mappers;
 using Microsoft.AspNetCore.Authorization;
+using FinnanciaCSharp.Constants;
 
 namespace FinnanciaCSharp.Controllers
 {
@@ -17,11 +18,13 @@ namespace FinnanciaCSharp.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IGenAIService _genAiService;
         private readonly IMessageRepository _messageRepository;
-        public AIController(UserManager<User> userManager, IGenAIService genAIService, IMessageRepository messageRepository)
+        private readonly IUserSubscriptionRepository _userSubRepository;
+        public AIController(UserManager<User> userManager, IGenAIService genAIService, IMessageRepository messageRepository, IUserSubscriptionRepository userSubscriptionRepository)
         {
             _userManager = userManager;
             _genAiService = genAIService;
             _messageRepository = messageRepository;
+            _userSubRepository = userSubscriptionRepository;
         }
         [HttpGet]
         public async Task<IActionResult> GetMessages()
@@ -59,13 +62,16 @@ namespace FinnanciaCSharp.Controllers
                     return Unauthorized(new { error = "Não autorizado" });
                 }
 
-                //TODO: User Subscription
+                var userSubscription = await _userSubRepository.GetUserSubscriptionAsync(userId);
 
                 var oldMessages = await _messageRepository.GetMessagesAsync(userId);
 
                 int numberOfUserMessages = oldMessages.Count() / 2;
 
-                //verify user subs
+                if (numberOfUserMessages >= Constants.Constants.MAX_PROMPTS_FOR_FREE && (userSubscription == null || !userSubscription.IsActive))
+                {
+                    return Ok(new { maxPromptsReached = true });
+                }
 
                 var aiResponse = await _genAiService.ChatWithAIAsync(bodyDTO.Message, oldMessages, user.Name);
 
