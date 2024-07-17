@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using FinnanciaCSharp.Extensions;
 using DotNetEnv;
 using Stripe;
+using FinnanciaCSharp.Interfaces;
 
 namespace FinnanciaCSharp.Controllers
 {
@@ -14,12 +15,14 @@ namespace FinnanciaCSharp.Controllers
     public class SubscriptionController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
+        private readonly IUserSubscriptionRepository _userSubRepository;
         private readonly string _apiKey;
         private readonly string _returnUrl;
-        public SubscriptionController(UserManager<User> userManager)
+        public SubscriptionController(UserManager<User> userManager, IUserSubscriptionRepository userSubRepository)
         {
             Env.Load();
             _userManager = userManager;
+            _userSubRepository = userSubRepository;
             _apiKey = Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY")!;
             _returnUrl = $"{Environment.GetEnvironmentVariable("CLIENT_URL")!}/plans";
         }
@@ -37,19 +40,25 @@ namespace FinnanciaCSharp.Controllers
                     return Unauthorized(new { error = "Não autorizado" });
                 }
 
-                //TODO: User subscription
-                // const userSubscription = await getUserSubscription(user.id);
-                // if (userSubscription && userSubscription.stripeCustomerId) {
-                // 	const stripeSession = await stripe.billingPortal.sessions.create({
-                // 		customer: userSubscription.stripeCustomerId,
-                // 		return_url: returnUrl,
-                // 	});
-
-                // 	return NextResponse.json({ url: stripeSession.url });
-                // }
-
                 StripeConfiguration.ApiKey = _apiKey;
-                var options = new Stripe.Checkout.SessionCreateOptions
+
+                var userSubscription = await _userSubRepository.GetUserSubscriptionAsync(userId);
+
+                if (userSubscription != null && userSubscription.IsActive)
+                {
+                    var billingPortalOptions = new Stripe.BillingPortal.SessionCreateOptions
+                    {
+                        Customer = userSubscription.StripeCustomerId,
+                        ReturnUrl = _returnUrl,
+                    };
+
+                    var billingPortalService = new Stripe.BillingPortal.SessionService();
+                    var billingPortalSession = await billingPortalService.CreateAsync(billingPortalOptions);
+
+                    return Ok(new { url = billingPortalSession.Url });
+                }
+
+                var checkoutOptions = new Stripe.Checkout.SessionCreateOptions
                 {
                     Mode = "subscription",
                     PaymentMethodTypes = new List<string> { "card" },
@@ -81,11 +90,11 @@ namespace FinnanciaCSharp.Controllers
                     SuccessUrl = _returnUrl,
                     CancelUrl = _returnUrl
                 };
-                var service = new Stripe.Checkout.SessionService();
 
-                var res = await service.CreateAsync(options);
+                var checkoutService = new Stripe.Checkout.SessionService();
+                var checkoutSession = await checkoutService.CreateAsync(checkoutOptions);
 
-                return Ok(new { url = res.Url });
+                return Ok(new { url = checkoutSession.Url });
             }
             catch (Exception e)
             {

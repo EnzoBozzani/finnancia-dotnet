@@ -1,6 +1,6 @@
 using FinnanciaCSharp.Data;
+using FinnanciaCSharp.DTOs.UserSubscription;
 using FinnanciaCSharp.Interfaces;
-using FinnanciaCSharp.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinnanciaCSharp.Repository
@@ -12,7 +12,7 @@ namespace FinnanciaCSharp.Repository
         {
             _context = context;
         }
-        public async Task<UserSubscription?> GetUserSubscriptionAsync(string userId)
+        public async Task<UserSubscriptionDTO?> GetUserSubscriptionAsync(string userId)
         {
             var userSubscription = await _context.UsersSubscriptions
                 .Where(userSub => userSub.UserId == userId)
@@ -25,6 +25,17 @@ namespace FinnanciaCSharp.Repository
 
             var isActive =
                 userSubscription.StripePriceId != null && userSubscription.StripeCurrentPeriodEnd.AddDays(1) > DateTime.Now;
+
+            return new UserSubscriptionDTO
+            {
+                Id = userSubscription.Id,
+                UserId = userSubscription.UserId,
+                StripeSubscriptionId = userSubscription.StripeSubscriptionId,
+                StripeCurrentPeriodEnd = userSubscription.StripeCurrentPeriodEnd,
+                StripeCustomerId = userSubscription.StripeCustomerId,
+                StripePriceId = userSubscription.StripePriceId ?? "",
+                IsActive = isActive
+            };
         }
     }
 }
