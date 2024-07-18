@@ -61,7 +61,12 @@ namespace FinnanciaCSharp.Controllers
 
                 var userSubscription = await _userSubRepository.GetUserSubscriptionAsync(userId);
 
-                //TODO: contar categorias e seguir igual github
+                var categoriesCount = await _categoryRepository.CountAsync(userId);
+
+                if (categoriesCount >= Constants.Constants.MAX_CATEGORIES_FOR_FREE && (userSubscription == null || !userSubscription.IsActive))
+                {
+                    return Ok(new { message = "Você atingiu o limite de 5 categorias!", maxFreeCategoriesReached = true });
+                }
 
                 Category? existingCategory = null;
 

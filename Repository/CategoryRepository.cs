@@ -15,6 +15,11 @@ namespace FinnanciaCSharp.Repository
             _context = context;
         }
 
+        public async Task<int> CountAsync(string userId)
+        {
+            return await _context.Categories.Where(category => category.UserId == userId).CountAsync();
+        }
+
         public async Task<Category> CreateAsync(NewCategoryDTO bodyDTO, string userId)
         {
             var category = new Category

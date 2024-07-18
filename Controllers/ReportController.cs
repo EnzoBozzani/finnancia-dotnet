@@ -16,10 +16,12 @@ namespace FinnanciaCSharp.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly ISheetRepository _sheetRepository;
-        public ReportController(UserManager<User> userManager, ISheetRepository sheetRepository)
+        private readonly IUserSubscriptionRepository _userSubRepository;
+        public ReportController(UserManager<User> userManager, ISheetRepository sheetRepository, IUserSubscriptionRepository userSubscriptionRepository)
         {
             _userManager = userManager;
             _sheetRepository = sheetRepository;
+            _userSubRepository = userSubscriptionRepository;
         }
 
         [HttpGet("{sheetId}")]
@@ -35,17 +37,18 @@ namespace FinnanciaCSharp.Controllers
                     return Unauthorized(new { error = "Não autorizado" });
                 }
 
-                //TODO: User Sub
+                var userSubscription = await _userSubRepository.GetUserSubscriptionAsync(userId);
 
-                // if (user.HasUsedFreeReport && !hasActiveSubscription)
-                // {
-                //      return Ok(new { message = "Você já usou seu relatório gratuito!", freeReportUsed = "true" });
-                // }
+                if (user.HasUsedFreeReport && (userSubscription == null || !userSubscription.IsActive))
+                {
+                    return Ok(new { message = "Você já usou seu relatório gratuito!", freeReportUsed = "true" });
+                }
 
-                // if (!hasActiveSubscription)
-                // {
-                //      update user.HasUsedFreeReport para true
-                // }
+                if (userSubscription == null || !userSubscription.IsActive)
+                {
+                    user.HasUsedFreeReport = true;
+                    await _userManager.UpdateAsync(user);
+                }
 
                 var sheet = await _sheetRepository.GetSheetWithFinanceWithCategoryAsync(userId, sheetId);
 

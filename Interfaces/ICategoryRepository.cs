@@ -10,5 +10,6 @@ namespace FinnanciaCSharp.Interfaces
         Task<List<CategoryDTO>> GetCategoriesAsync(string userId);
         Task<Category?> UpdateAsync(UpdateCategoryDTO bodyDTO, Guid id);
         Task<Category?> DeleteAsync(Guid id);
+        Task<int> CountAsync(string userId);
     }
 }

@@ -19,11 +19,13 @@ namespace FinnanciaCSharp.Controllers
         private readonly UserManager<User> _userManager;
         private readonly ISheetRepository _sheetRepository;
         private readonly IFinanceRepository _financeRepository;
-        public SheetController(ISheetRepository sheetRepository, UserManager<User> userManager, IFinanceRepository financeRepository)
+        private readonly IUserSubscriptionRepository _userSubRepository;
+        public SheetController(ISheetRepository sheetRepository, UserManager<User> userManager, IFinanceRepository financeRepository, IUserSubscriptionRepository userSubscriptionRepository)
         {
             _sheetRepository = sheetRepository;
             _userManager = userManager;
             _financeRepository = financeRepository;
+            _userSubRepository = userSubscriptionRepository;
         }
 
         [HttpGet]
@@ -238,7 +240,12 @@ namespace FinnanciaCSharp.Controllers
                     return BadRequest(new { error = "O mês e ano da finança devem corresponder ao da planilha" });
                 }
 
-                //TODO: USER SUBSCRIPTION
+                var userSubscription = await _userSubRepository.GetUserSubscriptionAsync(userId);
+
+                if (sheet.FinancesCount >= Constants.Constants.MAX_FINANCES_FOR_FREE && (userSubscription == null || !userSubscription.IsActive))
+                {
+                    return BadRequest(new { error = "Limite de finanças atingido!" });
+                }
 
                 await _financeRepository.CreateAsync(finance);
 
