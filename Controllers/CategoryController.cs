@@ -15,10 +15,12 @@ namespace FinnanciaCSharp.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly ICategoryRepository _categoryRepository;
-        public CategoryController(UserManager<User> userManager, ICategoryRepository categoryRepository)
+        private readonly IUserSubscriptionRepository _userSubRepository;
+        public CategoryController(UserManager<User> userManager, ICategoryRepository categoryRepository, IUserSubscriptionRepository userSubscriptionRepository)
         {
             _userManager = userManager;
             _categoryRepository = categoryRepository;
+            _userSubRepository = userSubscriptionRepository;
         }
 
         [HttpGet]
@@ -57,7 +59,9 @@ namespace FinnanciaCSharp.Controllers
                     return Unauthorized(new { error = "Não autorizado" });
                 }
 
-                //TODO: User Subscription and count categories
+                var userSubscription = await _userSubRepository.GetUserSubscriptionAsync(userId);
+
+                //TODO: contar categorias e seguir igual github
 
                 Category? existingCategory = null;
 

@@ -93,7 +93,7 @@ namespace FinnanciaCSharp.Controllers
                             PriceData = new Stripe.Checkout.SessionLineItemPriceDataOptions
                             {
                                 Currency = "BRL",
-                                UnitAmount = 990,
+                                UnitAmount = Constants.Constants.AMOUNT,
                                 ProductData = new Stripe.Checkout.SessionLineItemPriceDataProductDataOptions
                                 {
                                     Name = "Finnancia Pro",
